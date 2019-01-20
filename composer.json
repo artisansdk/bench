@@ -17,6 +17,7 @@
     },
     "require": {
         "php": ">=7.0",
+        "laravel-zero/framework": "~5.5",
         "friendsofphp/php-cs-fixer": "~2.10",
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
@@ -28,9 +29,6 @@
         "symfony/console": "^4.2",
         "symfony/event-dispatcher": "^4.2",
         "symfony/stopwatch": "^4.2"
-    },
-    "require-dev": {
-        "laravel-zero/framework": "~5.5"
     },
     "autoload": {
         "psr-4": {

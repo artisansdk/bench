@@ -3,7 +3,7 @@
 
 require file_exists(__DIR__.'/../vendor/autoload.php')
     ? realpath(__DIR__.'/../vendor/autoload.php')
-    : realpath(__DIR__.'/../../../autoload.php');
+    : __DIR__.'/../../../autoload.php';
 
 $app = new LaravelZero\Framework\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
