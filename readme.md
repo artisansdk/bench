@@ -14,7 +14,7 @@ A set of testing and package development tools for the developer work bench.
 The tool chain installs into a PHP application like any other PHP package:
 
 ```bash
-composer require artisansdk/bench
+composer require --dev artisansdk/bench
 ```
 
 # Usage Guide

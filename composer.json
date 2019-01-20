@@ -42,6 +42,9 @@
             "ArtisanSdk\\Bench\\Tests\\": "tests/"
         }
     },
+    "bin": [
+        "bin/bench",
+    ],
     "scripts": {
         "fix": [
             "@php bin/bench fix bin/ src/ tests/ --cache=.php_cs.cache --ansi"
