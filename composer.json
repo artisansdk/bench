@@ -43,7 +43,7 @@
         }
     },
     "bin": [
-        "bin/bench",
+        "bin/bench"
     ],
     "scripts": {
         "fix": [
