@@ -277,7 +277,7 @@ class Fix extends Command
      */
     protected function config(array $paths, string $rules = null, string $cache = null): Config
     {
-        $path = base_path(is_null($cache) ? '.php_cs.cache' : $cache);
+        $path = $this->basepath(is_null($cache) ? '.php_cs.cache' : $cache);
 
         $folder = dirname($path);
         if ( ! is_dir($folder)) {
@@ -312,7 +312,7 @@ class Fix extends Command
                 ->ignoreVCS(true);
 
             foreach ($paths as $path) {
-                $finder->in(base_path($path));
+                $finder->in($this->basepath($path));
             }
 
             $this->finder = $finder;
@@ -351,12 +351,24 @@ class Fix extends Command
     {
         if ( ! $this->rules) {
             if (is_string($path)) {
-                $this->rules = require_once base_path($path);
+                $this->rules = require_once $this->basepath($path);
             }
 
             $this->rules = config(Configs::PACKAGE.'::rules', []);
         }
 
         return $this->rules;
+    }
+
+    /**
+     * Get the base path.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function basepath(string $path): string
+    {
+        return getcwd().DIRECTORY_SEPARATOR.$path;
     }
 }
