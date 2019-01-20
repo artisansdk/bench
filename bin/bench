@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-require file_exists(__DIR__.'/../vendor/autoload.php')
-    ? realpath(__DIR__.'/../vendor/autoload.php')
-    : __DIR__.'/../../../autoload.php';
+require file_exists(__DIR__.'/../../../autoload.php')
+    ? __DIR__.'/../../../autoload.php'
+    : realpath(__DIR__.'/../vendor/autoload.php');
 
 $app = new LaravelZero\Framework\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
