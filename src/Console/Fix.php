@@ -70,6 +70,9 @@ class Fix extends Command
      */
     public function handle()
     {
+        $mode = ($this->option('pretend') ? 'linter' : 'fixer');
+        $this->info('Running '.$mode.'...');
+
         $this->setup(
             $this->argument('path'),
             $this->option('rules'),
@@ -358,17 +361,5 @@ class Fix extends Command
         }
 
         return $this->rules;
-    }
-
-    /**
-     * Get the base path.
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    protected function basepath(string $path): string
-    {
-        return getcwd().DIRECTORY_SEPARATOR.$path;
     }
 }

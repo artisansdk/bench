@@ -35,4 +35,16 @@ abstract class Command extends BaseCommand
     {
         return Application::class !== get_class(app());
     }
+
+    /**
+     * Get the base path.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function basepath(string $path): string
+    {
+        return getcwd().DIRECTORY_SEPARATOR.$path;
+    }
 }
