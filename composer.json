@@ -52,7 +52,7 @@
             "@php bin/bench test bin/ src/ tests/ --cache=.php_cs.cache --no-coverage --ansi"
         ],
         "watch": [
-            "watchman-make -p 'src/**/*.php' 'tests/**/*.php' --run=\"clear && printf '\\e[3J' && bin/bench test bin/ src/ tests/ --cache=.php_cs.cache --no-coverage --ansi\""
+            "watchman-make -p 'src/**/*.php' 'tests/**/*.php' --run=\"clear && printf '\\e[3J' && bin/bench test --no-coverage --ansi\""
         ],
         "report": [
             "[ -d reports ] || mkdir reports",
