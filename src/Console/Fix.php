@@ -9,12 +9,12 @@ use PhpCsFixer\Console\ConfigurationResolver;
 use PhpCsFixer\Console\Output\ErrorOutput;
 use PhpCsFixer\Console\Output\ProcessOutput;
 use PhpCsFixer\Error\ErrorsManager;
-use PhpCsFixer\Finder;
 use PhpCsFixer\Report\ReportSummary;
 use PhpCsFixer\Runner\Runner;
 use PhpCsFixer\ToolInfo;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class Fix extends Command
@@ -315,7 +315,8 @@ class Fix extends Command
                 ->ignoreVCS(true);
 
             foreach ($paths as $path) {
-                $finder->in($this->basepath($path));
+                $path = $this->basepath($path);
+                is_dir($path) ? $finder->in($path) : $finder->append([$path]);
             }
 
             $this->finder = $finder;
