@@ -89,7 +89,8 @@ class Fix extends Command
         return $this->calculate(
             count($this->fixed),
             count($this->errors->getInvalidErrors()),
-            count($this->errors->getExceptionErrors())
+            count($this->errors->getExceptionErrors()),
+            count($this->errors->getLintErrors())
         );
     }
 
@@ -195,17 +196,19 @@ class Fix extends Command
      * @param int $fixed
      * @param int $invalid
      * @param int $error
+     * @param int $lint
      *
      * @return int
      */
-    protected function calculate(int $fixed, int $invalid, int $error): int
+    protected function calculate(int $fixed, int $invalid, int $error, int $lint): int
     {
         return (new Calculator())
             ->calculate(
                 $this->resolver()->isDryRun(),
                 $fixed > 0,
                 $invalid > 0,
-                $error > 0
+                $error > 0,
+                $lint > 0
             );
     }
 
