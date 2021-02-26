@@ -183,7 +183,7 @@ class Fix extends Command
      */
     protected function timer()
     {
-        if ( ! $this->timer) {
+        if (! $this->timer) {
             $this->timer = $this->stopwatch->getEvent(__CLASS__);
         }
 
@@ -240,7 +240,7 @@ class Fix extends Command
      */
     protected function progress(): ProcessOutput
     {
-        if ( ! $this->progress) {
+        if (! $this->progress) {
             $this->progress = new ProcessOutput($this->getOutput(), $this->dispatcher, null, null);
         }
 
@@ -254,7 +254,7 @@ class Fix extends Command
      */
     protected function runner(): Runner
     {
-        if ( ! $this->runner) {
+        if (! $this->runner) {
             $this->runner = new Runner(
                 $this->finder,
                 $this->resolver()->getFixers(),
@@ -286,15 +286,16 @@ class Fix extends Command
         $path = $this->basepath(is_null($cache) ? '.php_cs.cache' : $cache);
 
         $folder = dirname($path);
-        if ( ! is_dir($folder)) {
+        if (! is_dir($folder)) {
             mkdir($folder);
         }
 
-        if ( ! $this->config) {
+        if (! $this->config) {
             $this->config = (new Config())
+                ->setRiskyAllowed(true)
                 ->setRules($this->rules($rules))
                 ->setFinder($this->finder($paths))
-                ->setUsingCache( ! is_null($cache))
+                ->setUsingCache(! is_null($cache))
                 ->setCacheFile($path);
         }
 
@@ -310,7 +311,7 @@ class Fix extends Command
      */
     protected function finder(array $paths): Finder
     {
-        if ( ! $this->finder) {
+        if (! $this->finder) {
             $finder = Finder::create()
                 ->name('*.php')
                 ->notName('*.blade.php')
@@ -337,7 +338,7 @@ class Fix extends Command
      */
     protected function resolver(bool $pretend = false): ConfigurationResolver
     {
-        if ( ! $this->resolver) {
+        if (! $this->resolver) {
             $this->resolver = new ConfigurationResolver($this->config, [
                 'dry-run' => $pretend,
                 'diff'    => $pretend,
@@ -356,7 +357,7 @@ class Fix extends Command
      */
     protected function rules(string $path = null): array
     {
-        if ( ! $this->rules) {
+        if (! $this->rules) {
             if (is_string($path)) {
                 $this->rules = require_once $this->basepath($path);
             }

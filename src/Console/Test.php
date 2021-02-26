@@ -78,7 +78,7 @@ class Test extends Command
         }
 
         $suites = $this->option('suite', []);
-        if ( ! empty($suites)) {
+        if (! empty($suites)) {
             $arguments[] = '--testsuite='.
                 ('paratest' === $runner
                     ? head($suites)
@@ -86,7 +86,7 @@ class Test extends Command
         }
 
         $filters = $this->option('filter', []);
-        if ( ! empty($filters)) {
+        if (! empty($filters)) {
             $arguments[] = '--filter='.implode(',', $filters);
             if ('paratest' === $runner) {
                 $arguments[] = '--functional';
@@ -109,7 +109,7 @@ class Test extends Command
     protected function lint(bool $ansi)
     {
         $paths = $this->argument('path', []);
-        if ( ! empty($paths)) {
+        if (! empty($paths)) {
             $this->getOutput()->write(PHP_EOL);
 
             $arguments = [

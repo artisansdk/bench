@@ -19,7 +19,7 @@ abstract class Command extends BaseCommand
      */
     public function __construct()
     {
-        if ( ! $this->isStandalone()) {
+        if (! $this->isStandalone()) {
             $this->signature = $this->prefix.':'.$this->signature;
         }
 

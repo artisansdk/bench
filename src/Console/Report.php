@@ -25,5 +25,6 @@ class Report extends Command
      */
     public function handle()
     {
+        $this->error('Not implemented.');
     }
 }

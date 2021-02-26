@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+define('LARAVEL_START', microtime(true));
+
 require file_exists(__DIR__.'/../../../autoload.php')
     ? __DIR__.'/../../../autoload.php'
     : realpath(__DIR__.'/../vendor/autoload.php');
