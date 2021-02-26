@@ -45,8 +45,8 @@
         "bin/bench"
     ],
     "scripts": {
-        "fix": "@php bin/bench fix bin/ src/ tests/ --cache=.php_cs.cache --ansi",
-        "test": "@php bin/bench test bin/ src/ tests/ --cache=.php_cs.cache --no-coverage --ansi",
+        "fix": "@php bin/bench fix bin/ src/ tests/ --cache=\".php_cs.cache\" --ansi",
+        "test": "@php bin/bench test bin/ src/ tests/ --cache=\".php_cs.cache\" --no-coverage --ansi",
         "watch": "watchman-make -p 'src/**/*.php' 'tests/**/*.php' --run=\"clear && printf '\\e[3J' && bin/bench test --no-coverage --ansi\"",
         "coverage": "[[ -f reports/coverage.txt ]] || exit 0 && coverage=`cat reports/coverage.txt | grep -m 1 \"Lines:\" | grep -E -o \"([0-9]{1,3})\" | head -1`; min=80; if [[ $coverage -lt $min ]]; then exit 2; fi",
         "dependencies": "vendor/bin/pdepend --summary-xml=reports/stats.xml src/",
@@ -55,9 +55,8 @@
         "messes": "vendor/bin/phpmd src/ html codesize,cleancode,unusedcode,naming --reportfile reports/messes.html --ignore-violations-on-exit",
         "report": [
             "[[ -d reports ]] || mkdir reports",
-            "@php bin/bench test --ansi",
+            "@composer test",
             "@composer coverage",
-            "@php bin/bench fix bin/ src/ tests/ --cache=.php_cs.cache --pretend --ansi",
             "@composer messes",
             "@composer dependencies",
             "@composer lines",
