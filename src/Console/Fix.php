@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtisanSdk\Bench\Console;
 
 use ArtisanSdk\Bench\Providers\Configs;
@@ -8,11 +10,12 @@ use PhpCsFixer\Console\Command\FixCommandExitStatusCalculator as Calculator;
 use PhpCsFixer\Console\ConfigurationResolver;
 use PhpCsFixer\Console\Output\ErrorOutput;
 use PhpCsFixer\Console\Output\ProcessOutput;
+use PhpCsFixer\Console\Report\FixReport\ReportSummary;
 use PhpCsFixer\Error\ErrorsManager;
-use PhpCsFixer\Report\ReportSummary;
 use PhpCsFixer\Runner\Runner;
 use PhpCsFixer\ToolInfo;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Terminal;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -39,11 +42,6 @@ class Fix extends Command
 
     /**
      * Inject the dependencies.
-     *
-     * @param \PhpCsFixer\Error\ErrorsManager                    $errors
-     * @param \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher
-     * @param \Symfony\Component\Stopwatch\Stopwatch             $stopwatch
-     * @param \PhpCsFixer\ToolInfo                               $info
      */
     public function __construct(ErrorsManager $errors, EventDispatcher $dispatcher, Stopwatch $stopwatch, ToolInfo $info)
     {
@@ -61,6 +59,25 @@ class Fix extends Command
         $this->timer = null;
         $this->progress = null;
         $this->fixed = [];
+    }
+
+    /**
+     * Setup the environment to run the fixer.
+     *
+     * @param string $rules
+     * @param string $cache
+     *
+     * @return \PhpCsFixer\Runnder\Runner
+     */
+    protected function setup(array $paths, $rules, string $cache = null, bool $pretend = false): Runner
+    {
+        $this->config($paths, $rules, $cache);
+
+        $this->resolver($pretend);
+
+        $this->progress();
+
+        return $this->runner();
     }
 
     /**
@@ -87,40 +104,38 @@ class Fix extends Command
         $this->report();
 
         return $this->calculate(
-            count($this->fixed),
-            count($this->errors->getInvalidErrors()),
-            count($this->errors->getExceptionErrors()),
-            count($this->errors->getLintErrors())
+            \count($this->fixed),
+            \count($this->errors->getInvalidErrors()),
+            \count($this->errors->getExceptionErrors()),
+            \count($this->errors->getLintErrors())
         );
     }
 
     /**
      * Render the error report.
      */
-    protected function report()
+    protected function report(): void
     {
         $errors = new ErrorOutput($this->getOutput());
 
         $invalid = $this->errors->getInvalidErrors();
-        if (count($invalid) > 0) {
+        if (\count($invalid) > 0) {
             $errors->listErrors('linting before fixing', $invalid);
         }
 
         $exception = $this->errors->getExceptionErrors();
-        if (count($exception) > 0) {
+        if (\count($exception) > 0) {
             $errors->listErrors('fixing', $exception);
         }
 
         $lint = $this->errors->getLintErrors();
-        if (count($lint) > 0) {
+        if (\count($lint) > 0) {
             $errors->listErrors('linting after fixing', $lint);
         }
     }
 
     /**
      * Render the summary report of files fixed.
-     *
-     * @param array $fixed
      *
      * @return mixed
      */
@@ -150,8 +165,6 @@ class Fix extends Command
 
     /**
      * Fix the files.
-     *
-     * @return array
      */
     protected function fix(): array
     {
@@ -165,7 +178,7 @@ class Fix extends Command
     /**
      * Start the timer.
      */
-    protected function start()
+    protected function start(): void
     {
         $this->stopwatch->start(__CLASS__);
     }
@@ -173,7 +186,7 @@ class Fix extends Command
     /**
      * Stop the timer.
      */
-    protected function stop()
+    protected function stop(): void
     {
         $this->stopwatch->stop(__CLASS__);
     }
@@ -192,13 +205,6 @@ class Fix extends Command
 
     /**
      * Calculate the exit code.
-     *
-     * @param int $fixed
-     * @param int $invalid
-     * @param int $error
-     * @param int $lint
-     *
-     * @return int
      */
     protected function calculate(int $fixed, int $invalid, int $error, int $lint): int
     {
@@ -213,35 +219,17 @@ class Fix extends Command
     }
 
     /**
-     * Setup the environment to run the fixer.
-     *
-     * @param array  $paths
-     * @param string $rules
-     * @param string $cache
-     * @param bool   $pretend
-     *
-     * @return \PhpCsFixer\Runnder\Runner
-     */
-    protected function setup(array $paths, $rules, string $cache = null, bool $pretend = false): Runner
-    {
-        $this->config($paths, $rules, $cache);
-
-        $this->resolver($pretend);
-
-        $this->progress();
-
-        return $this->runner();
-    }
-
-    /**
      * Get the progressive output.
-     *
-     * @return \PhpCsFixer\Console\Output\ProcessOutput
      */
     protected function progress(): ProcessOutput
     {
         if (! $this->progress) {
-            $this->progress = new ProcessOutput($this->getOutput(), $this->dispatcher, null, null);
+            $this->progress = new ProcessOutput(
+                $this->getOutput(),
+                $this->dispatcher,
+                (new Terminal())->getWidth(),
+                $this->finder->count()
+            );
         }
 
         return $this->progress;
@@ -249,23 +237,22 @@ class Fix extends Command
 
     /**
      * Get the fixer.
-     *
-     * @return \PhpCsFixer\Runner\Runner
      */
     protected function runner(): Runner
     {
         if (! $this->runner) {
+            $resolver = $this->resolver();
             $this->runner = new Runner(
                 $this->finder,
-                $this->resolver()->getFixers(),
-                $this->resolver()->getDiffer(),
+                $resolver->getFixers(),
+                $resolver->getDiffer(),
                 $this->dispatcher,
                 $this->errors,
-                $this->resolver()->getLinter(),
-                $this->resolver()->isDryRun(),
-                $this->resolver()->getCacheManager(),
-                $this->resolver()->getDirectory(),
-                $this->resolver()->shouldStopOnViolation()
+                $resolver->getLinter(),
+                $resolver->isDryRun(),
+                $resolver->getCacheManager(),
+                $resolver->getDirectory(),
+                $resolver->shouldStopOnViolation()
             );
         }
 
@@ -275,17 +262,14 @@ class Fix extends Command
     /**
      * Get the config.
      *
-     * @param array  $paths
      * @param string $rules
      * @param string $cache
-     *
-     * @return \PhpCsFixer\Config
      */
     protected function config(array $paths, string $rules = null, string $cache = null): Config
     {
-        $path = $this->basepath(is_null($cache) ? '.php_cs.cache' : $cache);
+        $path = $this->basepath(null === $cache ? '.php_cs.cache' : $cache);
 
-        $folder = dirname($path);
+        $folder = \dirname($path);
         if (! is_dir($folder)) {
             mkdir($folder);
         }
@@ -295,7 +279,7 @@ class Fix extends Command
                 ->setRiskyAllowed(true)
                 ->setRules($this->rules($rules))
                 ->setFinder($this->finder($paths))
-                ->setUsingCache(! is_null($cache))
+                ->setUsingCache(null !== $cache)
                 ->setCacheFile($path);
         }
 
@@ -304,8 +288,6 @@ class Fix extends Command
 
     /**
      * Get the finder from the paths.
-     *
-     * @param array $paths
      *
      * @return \PhpCsFixer\Finder
      */
@@ -331,17 +313,14 @@ class Fix extends Command
 
     /**
      * Get the resolver.
-     *
-     * @param bool $pretend
-     *
-     * @return \PhpCsFixer\Console\ConfigurationResolver
      */
     protected function resolver(bool $pretend = false): ConfigurationResolver
     {
         if (! $this->resolver) {
             $this->resolver = new ConfigurationResolver($this->config, [
+                'diff' => $pretend,
                 'dry-run' => $pretend,
-                'diff'    => $pretend,
+                'stop-on-violation' => false,
             ], getcwd(), $this->info);
         }
 
@@ -352,13 +331,11 @@ class Fix extends Command
      * Get the rules.
      *
      * @param string $path
-     *
-     * @return array
      */
     protected function rules(string $path = null): array
     {
         if (! $this->rules) {
-            if (is_string($path)) {
+            if (\is_string($path)) {
                 $this->rules = require_once $this->basepath($path);
             }
 

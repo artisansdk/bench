@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtisanSdk\Bench\Console;
 
 use Symfony\Component\Process\Process;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class Test extends Command
 {
     /**
@@ -46,10 +52,8 @@ class Test extends Command
 
     /**
      * Run the tests.
-     *
-     * @param bool $ansi
      */
-    protected function test(bool $ansi)
+    protected function test(bool $ansi): void
     {
         $processes = (int) $this->option('processes');
 
@@ -95,27 +99,25 @@ class Test extends Command
 
         $process = new Process($arguments);
 
-        $process->mustRun(function ($type, $buffer) {
+        $process->mustRun(function ($type, $buffer): void {
             $output = Process::ERR === $type ? 'error' : 'write';
-            $this->getOutput()->$output($buffer);
+            $this->getOutput()->{$output}($buffer);
         });
     }
 
     /**
      * Lint the source paths.
-     *
-     * @param bool $ansi
      */
-    protected function lint(bool $ansi)
+    protected function lint(bool $ansi): void
     {
         $paths = $this->argument('path', []);
         if (! empty($paths)) {
             $this->getOutput()->write(PHP_EOL);
 
             $arguments = [
-                'path'                         => $paths,
+                'path' => $paths,
                 $ansi ? '--ansi' : '--no-ansi' => true,
-                '--pretend'                    => true,
+                '--pretend' => true,
             ];
 
             if ($cache = $this->option('cache')) {

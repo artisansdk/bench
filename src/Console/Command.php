@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtisanSdk\Bench\Console;
 
 use Illuminate\Console\Command as BaseCommand;
@@ -28,23 +30,17 @@ abstract class Command extends BaseCommand
 
     /**
      * Is the application running as a standlone console.
-     *
-     * @return bool
      */
     protected function isStandalone(): bool
     {
-        return Application::class !== get_class(app());
+        return Application::class !== \get_class(app());
     }
 
     /**
      * Get the base path.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     protected function basepath(string $path): string
     {
-        return getcwd().DIRECTORY_SEPARATOR.$path;
+        return getcwd().\DIRECTORY_SEPARATOR.$path;
     }
 }

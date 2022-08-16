@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtisanSdk\Bench\Providers;
 
 use ArtisanSdk\Bench\Console\Command;
@@ -13,7 +15,7 @@ class Commands extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->commands($this->load(__DIR__.'/../Console', Command::class));
@@ -23,7 +25,7 @@ class Commands extends ServiceProvider
     /**
      * Register bindings in the container.
      */
-    public function register()
+    public function register(): void
     {
     }
 
@@ -41,7 +43,7 @@ class Commands extends ServiceProvider
 
         $namespace = (new ReflectionClass($class))->getNamespaceName();
         $parts = explode('\\', $namespace);
-        $parts = array_slice($parts, 0, count($parts) - 1);
+        $parts = \array_slice($parts, 0, \count($parts) - 1);
         $namespace = implode('\\', $parts);
 
         $base_path = realpath(__DIR__.'/../');
@@ -55,8 +57,8 @@ class Commands extends ServiceProvider
                 Str::after($file->getPathname(), $base_path)
             );
 
-            if (is_subclass_of($subclass, $class) &&
-                ! (new ReflectionClass($subclass))->isAbstract()) {
+            if (is_subclass_of($subclass, $class)
+                && ! (new ReflectionClass($subclass))->isAbstract()) {
                 $classes[] = $subclass;
             }
         }
@@ -66,7 +68,7 @@ class Commands extends ServiceProvider
 
     protected function normalizePaths($paths): array
     {
-        $paths = array_unique(is_array($paths) ? $paths : (array) $paths);
+        $paths = array_unique(\is_array($paths) ? $paths : (array) $paths);
 
         $paths = array_filter($paths, function ($path) {
             return is_dir($path);

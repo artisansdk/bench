@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtisanSdk\Bench\Tests\Unit;
 
 use ArtisanSdk\Bench\Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    public function test_example()
+    public function testExample(): void
     {
-        $this->assertTrue(true);
+        static::assertTrue(true);
     }
 }

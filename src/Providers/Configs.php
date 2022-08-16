@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtisanSdk\Bench\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -11,12 +13,12 @@ class Configs extends ServiceProvider
      *
      * @var string
      */
-    const PACKAGE = 'artisansdk/bench';
+    public const PACKAGE = 'artisansdk/bench';
 
     /**
      * Perform post-registration booting of services.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__.'/../../config/rules.php' => config_path(static::PACKAGE.'/rules.php'),
@@ -26,7 +28,7 @@ class Configs extends ServiceProvider
     /**
      * Register bindings in the container.
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/rules.php',

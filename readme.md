@@ -1,13 +1,15 @@
 # Bench
 
-A set of testing and package development tools for the developer work bench.
+A set of testing and package development tools for the Artisan's work bench.
 
 ## Table of Contents
 
+- [Bench](#bench)
+  - [Table of Contents](#table-of-contents)
 - [Installation](#installation)
 - [Usage Guide](#usage-guide)
 - [Running the Tests](#running-the-tests)
-- [Licensing](#licensing)
+  - [Licensing](#licensing)
 
 # Installation
 
@@ -46,9 +48,9 @@ Additionally `composer report` assumes a Unix system to run line coverage report
 Configure the command setting the value for `min = 80` to set your minimum line
 coverage requirements.
 
-# Licensing
+## Licensing
 
-Copyright (c) 2018-2019 [Artisans Collaborative](https://artisanscollaborative.com)
+Copyright (c) 2018-2022 [Artisan Made, Co.](http://artisanmade.io)
 
 This package is released under the MIT license. Please see the LICENSE file
 distributed with every copy of the code for commercial licensing terms.
