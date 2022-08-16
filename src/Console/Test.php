@@ -45,15 +45,14 @@ class Test extends Command
 
         $this->info('Running tests...');
 
-        $this->test($ansi);
-
-        $this->lint($ansi);
+        return $this->test($ansi)
+            || $this->lint($ansi);
     }
 
     /**
      * Run the tests.
      */
-    protected function test(bool $ansi): void
+    protected function test(bool $ansi): int
     {
         $processes = (int) $this->option('processes');
 
@@ -99,7 +98,7 @@ class Test extends Command
 
         $process = new Process($arguments);
 
-        $process->mustRun(function ($type, $buffer): void {
+        return $process->run(function ($type, $buffer): void {
             $output = Process::ERR === $type ? 'error' : 'write';
             $this->getOutput()->{$output}($buffer);
         });
@@ -108,28 +107,30 @@ class Test extends Command
     /**
      * Lint the source paths.
      */
-    protected function lint(bool $ansi): void
+    protected function lint(bool $ansi): int
     {
         $paths = $this->argument('path', []);
-        if (! empty($paths)) {
-            $this->getOutput()->write(PHP_EOL);
-
-            $arguments = [
-                'path' => $paths,
-                $ansi ? '--ansi' : '--no-ansi' => true,
-                '--pretend' => true,
-            ];
-
-            if ($cache = $this->option('cache')) {
-                $arguments['--cache'] = (string) $cache;
-            }
-
-            if ($rules = $this->option('rules')) {
-                $arguments['--rules'] = (string) $rules;
-            }
-
-            $prefix = $this->isStandalone() ? '' : $this->prefix.':';
-            $this->call($prefix.'fix', $arguments);
+        if (empty($paths)) {
+            return 0;
         }
+        $this->getOutput()->write(PHP_EOL);
+
+        $arguments = [
+            'path' => $paths,
+            $ansi ? '--ansi' : '--no-ansi' => true,
+            '--pretend' => true,
+        ];
+
+        if ($cache = $this->option('cache')) {
+            $arguments['--cache'] = (string) $cache;
+        }
+
+        if ($rules = $this->option('rules')) {
+            $arguments['--rules'] = (string) $rules;
+        }
+
+        $prefix = $this->isStandalone() ? '' : $this->prefix.':';
+
+        return $this->call($prefix.'fix', $arguments);
     }
 }
