@@ -50,7 +50,7 @@ coverage requirements.
 
 ## Licensing
 
-Copyright (c) 2018-2022 [Artisan Made, Co.](http://artisanmade.io)
+Copyright (c) 2018-2023 [Artisan Made, Co.](http://artisanmade.io)
 
 This package is released under the MIT license. Please see the LICENSE file
 distributed with every copy of the code for commercial licensing terms.
